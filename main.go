@@ -54,7 +54,7 @@ func main() {
 func master() {
 	var err error
 	for {
-		masterAddr, err = getMasterAddr(saddr, *masterName)
+		masterAddr, err = getMasterAddr(*sentinelAddr, *masterName)
 		if err != nil {
 			log.Println(err)
 		}
@@ -78,8 +78,8 @@ func proxy(local io.ReadWriteCloser, remoteAddr *net.TCPAddr) {
 	go pipe(remote, local)
 }
 
-func getMasterAddr(sentinelAddress *net.TCPAddr, masterName string) (*net.TCPAddr, error) {
-	conn, err := net.DialTCP("tcp", nil, sentinelAddress)
+func getMasterAddr(sentinelAddress string, masterName string) (*net.TCPAddr, error) {
+	conn, err := net.Dial("tcp", sentinelAddress)
 	if err != nil {
 		return nil, err
 	}
